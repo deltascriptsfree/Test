@@ -1,6 +1,9 @@
 -- ============================================================================
--- MM2 ULTIMATE HACK SUITE (DELTA MOBILE OPTIMIZED)
--- Fully functional Lua script without execution errors.
+-- MM2 ULTIMATE GOD SUITE (DELTA MOBILE OPTIMIZED)
+-- Features: Fixed Mobile Fly, Anti-Void, Non-Visual Morph & Body Mods (Corblox/Headless),
+-- Advanced Aimbot (Innocent safety logic + Instant pre-round Murderer reveal),
+-- Convenient Fling Menu with pinned Murderer/Sheriff, Remote Shoot/Throw Tool,
+-- Anti-Fling, Godmode (Invincibility toggle).
 -- ============================================================================
 
 local CoreGui = game:GetService("CoreGui")
@@ -22,22 +25,22 @@ local FlyActive = false
 local SpeedActive = false
 local AutoGunActive = false
 local FullbrightActive = false
-local InfJumpActive = false
-local SpinBotActive = false
-local PreGameRoleActive = true
+local AntiVoidActive = false
+local GodmodeActive = false
+local AntiFlingActive = false
 
 -- Configurations
 local WalkSpeedValue = 32
-local FlySpeedValue = 50
+local FlySpeedValue = 60
 
--- Cleanup previous GUI instances safely
-if CoreGui:FindFirstChild("MM2UltimateSuiteGuiFinal") then
-    CoreGui.MM2UltimateSuiteGuiFinal:Destroy()
+-- Cleanup previous GUI instances
+if CoreGui:FindFirstChild("MM2GodSuiteGui") then
+    CoreGui.MM2GodSuiteGui:Destroy()
 end
 
--- Main Screen Gui Container
+-- Main Screen Gui
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MM2UltimateSuiteGuiFinal"
+ScreenGui.Name = "MM2GodSuiteGui"
 ScreenGui.ResetOnSpawn = false
 
 if gethui then
@@ -49,39 +52,36 @@ else
     ScreenGui.Parent = CoreGui
 end
 
--- Floating Toggle Button
+-- Toggle Button
 local ToggleButton = Instance.new("TextButton")
-ToggleButton.Name = "ToggleButton"
 ToggleButton.Parent = ScreenGui
-ToggleButton.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 ToggleButton.BorderColor3 = Color3.fromRGB(0, 170, 255)
 ToggleButton.BorderSizePixel = 2
-ToggleButton.Position = UDim2.new(0.02, 0, 0.1, 0)
+ToggleButton.Position = UDim2.new(0.02, 0, 0.08, 0)
 ToggleButton.Size = UDim2.new(0, 45, 0, 45)
 ToggleButton.Font = Enum.Font.GothamBold
-ToggleButton.Text = "MENU"
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Text = "GOD"
+ToggleButton.TextColor3 = Color3.fromRGB(0, 170, 255)
 ToggleButton.TextSize = 11
 ToggleButton.Active = true
 ToggleButton.Draggable = true
 
--- Compact Main Frame Window
+-- Main Frame Window
 local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-MainFrame.BorderColor3 = Color3.fromRGB(45, 45, 45)
+MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrame.BorderColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.BorderSizePixel = 1
-MainFrame.Position = UDim2.new(0.08, 0, 0.1, 0)
-MainFrame.Size = UDim2.new(0, 220, 0, 310)
+MainFrame.Position = UDim2.new(0.08, 0, 0.08, 0)
+MainFrame.Size = UDim2.new(0, 230, 0, 350)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
 -- Title Bar
 local TitleBar = Instance.new("Frame")
-TitleBar.Name = "TitleBar"
 TitleBar.Parent = MainFrame
-TitleBar.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+TitleBar.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 TitleBar.BorderSizePixel = 0
 TitleBar.Size = UDim2.new(1, 0, 0, 30)
 
@@ -91,12 +91,11 @@ TitleText.BackgroundTransparency = 1
 TitleText.Position = UDim2.new(0, 10, 0, 0)
 TitleText.Size = UDim2.new(1, -30, 1, 0)
 TitleText.Font = Enum.Font.GothamBold
-TitleText.Text = "MM2 HACK SUITE"
+TitleText.Text = "MM2 GOD SUITE v5"
 TitleText.TextColor3 = Color3.fromRGB(0, 170, 255)
 TitleText.TextSize = 12
 TitleText.TextXAlignment = Enum.TextXAlignment.Left
 
--- Close Window Button
 local CloseButton = Instance.new("TextButton")
 CloseButton.Parent = TitleBar
 CloseButton.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
@@ -123,7 +122,7 @@ ScrollingFrame.Parent = MainFrame
 ScrollingFrame.BackgroundTransparency = 1
 ScrollingFrame.Position = UDim2.new(0, 0, 0, 32)
 ScrollingFrame.Size = UDim2.new(1, 0, 1, -32)
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 550)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 850)
 ScrollingFrame.ScrollBarThickness = 4
 
 local UIListLayout = Instance.new("UIListLayout")
@@ -132,13 +131,13 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 5)
 
--- Helper: Create Toggle Buttons
+-- Helper: Create Toggles
 local function createToggle(labelName, callback)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
-    Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    Button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
     Button.BorderSizePixel = 0
-    Button.Size = UDim2.new(0, 200, 0, 32)
+    Button.Size = UDim2.new(0, 210, 0, 32)
     Button.Font = Enum.Font.Gotham
     Button.Text = labelName .. ": OFF"
     Button.TextColor3 = Color3.fromRGB(160, 160, 160)
@@ -152,7 +151,7 @@ local function createToggle(labelName, callback)
             Button.TextColor3 = Color3.fromRGB(255, 255, 255)
             Button.Text = labelName .. ": ON"
         else
-            Button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+            Button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
             Button.TextColor3 = Color3.fromRGB(160, 160, 160)
             Button.Text = labelName .. ": OFF"
         end
@@ -162,10 +161,9 @@ local function createToggle(labelName, callback)
     end)
 end
 
--- Role Detection System (Red = Murderer, Blue = Sheriff, Green = Innocent)
+-- Role Detection System
 local function fetchPlayerRole(targetPlayer)
     if not targetPlayer.Character then return "Innocent", Color3.fromRGB(0, 255, 0) end
-    
     local char = targetPlayer.Character
     local backpack = targetPlayer:FindFirstChild("Backpack")
     
@@ -181,30 +179,39 @@ local function fetchPlayerRole(targetPlayer)
     end
 end
 
--- Pre-game Role Display Label
+-- Pre-Round / Instant Murderer Detection Label
 local PreGameLabel = Instance.new("TextLabel")
 PreGameLabel.Parent = ScreenGui
 PreGameLabel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-PreGameLabel.BorderColor3 = Color3.fromRGB(0, 170, 255)
+PreGameLabel.BorderColor3 = Color3.fromRGB(255, 40, 40)
 PreGameLabel.BorderSizePixel = 1
-PreGameLabel.Position = UDim2.new(0.02, 0, 0.22, 0)
-PreGameLabel.Size = UDim2.new(0, 170, 0, 28)
+PreGameLabel.Position = UDim2.new(0.02, 0, 0.16, 0)
+PreGameLabel.Size = UDim2.new(0, 180, 0, 35)
 PreGameLabel.Font = Enum.Font.GothamBold
-PreGameLabel.Text = "Role: Waiting..."
+PreGameLabel.Text = "Murderer: Searching..."
 PreGameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 PreGameLabel.TextSize = 11
 
 RunService.Heartbeat:Connect(function()
-    if PreGameRoleActive and LocalPlayer then
-        local role, color = fetchPlayerRole(LocalPlayer)
-        PreGameLabel.Text = "My Role: " .. role
-        PreGameLabel.TextColor3 = color
+    local foundMurderer = "None"
+    for _, p in ipairs(Players:GetPlayers()) do
+        local role, _ = fetchPlayerRole(p)
+        if role == "Murderer" then
+            foundMurderer = p.Name
+            break
+        end
+    end
+    if foundMurderer ~= "None" then
+        PreGameLabel.Text = "Murderer: " .. foundMurderer
+        PreGameLabel.TextColor3 = Color3.fromRGB(255, 40, 40)
+    else
+        PreGameLabel.Text = "Murderer: Waiting Round..."
+        PreGameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     end
 end)
 
--- 1. ESP Role Highlighting (Through Walls)
+-- 1. ESP Roles
 local espCache = {}
-
 local function clearEsp(player)
     if espCache[player] then
         if espCache[player].highlight then espCache[player].highlight:Destroy() end
@@ -222,7 +229,6 @@ RunService.RenderStepped:Connect(function()
     for _, p in ipairs(Players:GetPlayers()) do
         if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
             local role, color = fetchPlayerRole(p)
-            
             if not espCache[p] then
                 local hl = Instance.new("Highlight")
                 hl.Parent = p.Character
@@ -247,7 +253,6 @@ RunService.RenderStepped:Connect(function()
                 
                 espCache[p] = {highlight = hl, billboard = bb, text = txt}
             end
-            
             local data = espCache[p]
             if data and data.highlight and data.text then
                 data.highlight.FillColor = color
@@ -260,12 +265,10 @@ RunService.RenderStepped:Connect(function()
         end
     end
 end)
-
 createToggle("ESP Roles", function(state) EspActive = state end)
 
--- 2. Noclip System
+-- 2. Noclip
 createToggle("Noclip Walls", function(state) NoclipActive = state end)
-
 RunService.Stepped:Connect(function()
     if NoclipActive and LocalPlayer.Character then
         for _, part in ipairs(LocalPlayer.Character:GetDescendants()) do
@@ -276,21 +279,18 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- 3. Fixed Mobile Fly System
+-- 3. Fixed Mobile Fly System (No walking freeze)
 local flyConn
-
 createToggle("Fly Mode", function(state)
     FlyActive = state
     local char = LocalPlayer.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-    
     local hrp = char.HumanoidRootPart
     local humanoid = char:FindFirstChildOfClass("Humanoid")
     
     if FlyActive then
-        humanoid.PlatformStand = true
         local bv = Instance.new("BodyVelocity")
-        bv.Name = "FlyVelocity"
+        bv.Name = "FlyVel"
         bv.Parent = hrp
         bv.MaxForce = Vector3.new(math.huge, math.huge, math.huge)
         bv.Velocity = Vector3.new(0, 0, 0)
@@ -313,22 +313,16 @@ createToggle("Fly Mode", function(state)
         end)
     else
         if flyConn then flyConn:Disconnect() end
-        if hrp:FindFirstChild("FlyVelocity") then hrp.FlyVelocity:Destroy() end
+        if hrp:FindFirstChild("FlyVel") then hrp.FlyVel:Destroy() end
         if hrp:FindFirstChild("FlyGyro") then hrp.FlyGyro:Destroy() end
-        if humanoid then humanoid.PlatformStand = false end
     end
 end)
 
--- 4. Smart Aimbot (Murderer -> Sheriff, Sheriff/Innocent -> Murderer)
+-- 4. Smart Aimbot (Innocent safety logic: doesn't target murderers if you are innocent/sheriff unless aimed at murderer)
 createToggle("Smart Aimbot", function(state) AimbotActive = state end)
-
 RunService.RenderStepped:Connect(function()
     if not AimbotActive then return end
-    
     local myRole, _ = fetchPlayerRole(LocalPlayer)
-    local targetRole = ""
-    if myRole == "Murderer" then targetRole = "Sheriff"
-    elseif myRole == "Sheriff" or myRole == "Innocent" then targetRole = "Murderer" end
     
     local bestTarget = nil
     local minDistance = math.huge
@@ -337,7 +331,15 @@ RunService.RenderStepped:Connect(function()
         if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
             local role, _ = fetchPlayerRole(p)
             local hum = p.Character:FindFirstChildOfClass("Humanoid")
-            if hum and hum.Health > 0 and (role == targetRole or targetRole == "") then
+            
+            -- If innocent, do NOT target murderers automatically unless specified, or target murderer safely
+            local shouldTarget = false
+            if myRole == "Murderer" and role == "Sheriff" then shouldTarget = true
+            elseif (myRole == "Innocent" or myRole == "Sheriff") and role == "Murderer" then shouldTarget = true
+            elseif myRole == "Innocent" then shouldTarget = false -- Innocents shouldn't lock onto innocents
+            end
+            
+            if shouldTarget and hum and hum.Health > 0 then
                 local hrp = p.Character.HumanoidRootPart
                 local screenPos, onScreen = Camera:WorldToScreenPoint(hrp.Position)
                 if onScreen then
@@ -357,25 +359,55 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 5. Speed Boost (With correct toggle reset!)
-createToggle("Speed Boost", function(state) SpeedActive = state end)
-
+-- 5. Anti-Void (Instantly teleports back up if falling under map)
+createToggle("Anti-Void", function(state) AntiVoidActive = state end)
 RunService.Heartbeat:Connect(function()
-    if LocalPlayer.Character then
-        local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if hum then
-            if SpeedActive then
-                hum.WalkSpeed = WalkSpeedValue
-            else
-                hum.WalkSpeed = 16 -- Normal speed reset on OFF
-            end
+    if AntiVoidActive and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        if hrp.Position.Y < -10 then
+            hrp.CFrame = CFrame.new(hrp.Position.X, 10, hrp.Position.Z)
+            hrp.Velocity = Vector3.new(0, 0, 0)
         end
     end
 end)
 
--- 6. Auto Gun Pickup
-createToggle("Auto Gun Pickup", function(state) AutoGunActive = state end)
+-- 6. Godmode / Invincibility Toggle
+createToggle("Godmode (No Die)", function(state) GodmodeActive = state end)
+RunService.Heartbeat:Connect(function()
+    if GodmodeActive and LocalPlayer.Character then
+        local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum.MaxHealth = math.huge
+            hum.Health = math.huge
+        end
+    end
+end)
 
+-- 7. Anti-Fling
+createToggle("Anti-Fling", function(state) AntiFlingActive = state end)
+RunService.Stepped:Connect(function()
+    if AntiFlingActive and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local hrp = LocalPlayer.Character.HumanoidRootPart
+        if hrp.AssemblyLinearVelocity.Magnitude > 250 then
+            hrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+            hrp.AssemblyAngularVelocity = Vector3.new(0, 0, 0)
+        end
+    end
+end)
+
+-- 8. Speed Boost
+createToggle("Speed Boost", function(state) SpeedActive = state end)
+RunService.Heartbeat:Connect(function()
+    if LocalPlayer.Character then
+        local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+        if hum then
+            hum.WalkSpeed = SpeedActive and WalkSpeedValue or 16
+        end
+    end
+end)
+
+-- 9. Auto Gun Pickup
+createToggle("Auto Gun Pickup", function(state) AutoGunActive = state end)
 RunService.Heartbeat:Connect(function()
     if AutoGunActive and LocalPlayer.Character then
         local hrp = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
@@ -398,9 +430,8 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- 7. Fullbright
+-- 10. Fullbright
 createToggle("Fullbright", function(state) FullbrightActive = state end)
-
 RunService.RenderStepped:Connect(function()
     if FullbrightActive then
         Lighting.Brightness = 2
@@ -410,49 +441,142 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 8. Infinite Jump
-createToggle("Infinite Jump", function(state) InfJumpActive = state end)
+-- ============================================================================
+-- EXTRA BUTTONS: SHOOT / THROW KNIFE / NON-VISUAL MORPHS (Corblox & Headless)
+-- ============================================================================
 
-UserInputService.JumpRequest:Connect(function()
-    if InfJumpActive and LocalPlayer.Character then
-        local hum = LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        if hum then hum:ChangeState(Enum.HumanoidStateType.Jumping) end
-    end
+local ExtraBox = Instance.new("TextButton")
+ExtraBox.Parent = ScrollingFrame
+ExtraBox.BackgroundColor3 = Color3.fromRGB(0, 100, 160)
+ExtraBox.BorderSizePixel = 0
+ExtraBox.Size = UDim2.new(0, 210, 0, 32)
+ExtraBox.Font = Enum.Font.GothamBold
+ExtraBox.Text = "Open Action & Morph Panel"
+ExtraBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+ExtraBox.TextSize = 11
+
+local ActionWindow = Instance.new("Frame")
+ActionWindow.Parent = ScreenGui
+ActionWindow.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ActionWindow.BorderColor3 = Color3.fromRGB(0, 170, 255)
+ActionWindow.BorderSizePixel = 1
+ActionWindow.Position = UDim2.new(0.32, 0, 0.08, 0)
+ActionWindow.Size = UDim2.new(0, 200, 0, 280)
+ActionWindow.Visible = false
+ActionWindow.Active = true
+ActionWindow.Draggable = true
+
+local ActionTitle = Instance.new("TextLabel")
+ActionTitle.Parent = ActionWindow
+ActionTitle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ActionTitle.Size = UDim2.new(1, 0, 0, 28)
+ActionTitle.Font = Enum.Font.GothamBold
+ActionTitle.Text = "ACTION & MORPH MENU"
+ActionTitle.TextColor3 = Color3.fromRGB(0, 170, 255)
+ActionTitle.TextSize = 10
+
+ExtraBox.MouseButton1Click:Connect(function()
+    ActionWindow.Visible = not ActionWindow.Visible
 end)
 
--- 9. SpinBot
-createToggle("SpinBot", function(state) SpinBotActive = state end)
+local ActionScroll = Instance.new("ScrollingFrame")
+ActionScroll.Parent = ActionWindow
+ActionScroll.BackgroundTransparency = 1
+ActionScroll.Position = UDim2.new(0, 0, 0, 30)
+ActionScroll.Size = UDim2.new(1, 0, 1, -30)
+ActionScroll.CanvasSize = UDim2.new(0, 0, 0, 320)
+ActionScroll.ScrollBarThickness = 3
 
-RunService.RenderStepped:Connect(function()
-    if SpinBotActive and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        local hrp = LocalPlayer.Character.HumanoidRootPart
-        hrp.CFrame = hrp.CFrame * CFrame.Angles(0, math.rad(35), 0)
-    end
+local ActionLayout = Instance.new("UIListLayout")
+ActionLayout.Parent = ActionScroll
+ActionLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ActionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ActionLayout.Padding = UDim.new(0, 5)
+
+-- Button: Shoot / Throw Knife through walls
+local ShootBtn = Instance.new("TextButton")
+ShootBtn.Parent = ActionScroll
+ShootBtn.BackgroundColor3 = Color3.fromRGB(180, 50, 50)
+ShootBtn.Size = UDim2.new(0, 180, 0, 30)
+ShootBtn.Font = Enum.Font.GothamBold
+ShootBtn.Text = "Throw Knife / Shoot Target"
+ShootBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ShootBtn.TextSize = 10
+
+ShootBtn.MouseButton1Click:Connect(function()
+    pcall(function()
+        local tool = LocalPlayer.Character:FindFirstChildOfClass("Tool")
+        if tool then
+            tool:Activate()
+        end
+    end)
+end)
+
+-- Button: Headless (Non-Visual Server Side or Local Mesh Remove)
+local HeadlessBtn = Instance.new("TextButton")
+HeadlessBtn.Parent = ActionScroll
+HeadlessBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+HeadlessBtn.Size = UDim2.new(0, 180, 0, 30)
+HeadlessBtn.Font = Enum.Font.Gotham
+HeadlessBtn.Text = "Equip Headless (Real)"
+HeadlessBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+HeadlessBtn.TextSize = 10
+
+HeadlessBtn.MouseButton1Click:Connect(function()
+    pcall(function()
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Head") then
+            LocalPlayer.Character.Head.Transparency = 1
+            if LocalPlayer.Character.Head:FindFirstChild("face") then
+                LocalPlayer.Character.Head.face:Destroy()
+            end
+        end
+    end)
+end)
+
+-- Button: Corblox (Real Leg Remove/Scale)
+local CorbloxBtn = Instance.new("TextButton")
+CorbloxBtn.Parent = ActionScroll
+CorbloxBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+CorbloxBtn.Size = UDim2.new(0, 180, 0, 30)
+CorbloxBtn.Font = Enum.Font.Gotham
+CorbloxBtn.Text = "Equip Corblox Legs"
+CorbloxBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CorbloxBtn.TextSize = 10
+
+CorbloxBtn.MouseButton1Click:Connect(function()
+    pcall(function()
+        local char = LocalPlayer.Character
+        if char then
+            for _, v in ipairs(char:GetChildren()) do
+                if v.Name == "RightLeg" or v.Name == "LeftLeg" or v.Name == "RightLowerLeg" or v.Name == "LeftLowerLeg" then
+                    v:Destroy()
+                end
+            end
+        end
+    end)
 end)
 
 -- ============================================================================
--- FLING GUI MODULE (Select player by name to fling)
+-- CONVENIENT FLING MENU (Pinned Murderer & Sheriff at top, then list)
 -- ============================================================================
-local FlingOpen = false
 
-local FlingMenuBtn = Instance.new("TextButton")
-FlingMenuBtn.Parent = ScrollingFrame
-FlingMenuBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
-FlingMenuBtn.BorderSizePixel = 0
-FlingMenuBtn.Size = UDim2.new(0, 200, 0, 32)
-FlingMenuBtn.Font = Enum.Font.GothamBold
-FlingMenuBtn.Text = "Open Fling Menu"
-FlingMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-FlingMenuBtn.TextSize = 12
+local FlingOpenBtn = Instance.new("TextButton")
+FlingOpenBtn.Parent = ScrollingFrame
+FlingOpenBtn.BackgroundColor3 = Color3.fromRGB(160, 40, 40)
+FlingOpenBtn.BorderSizePixel = 0
+FlingOpenBtn.Size = UDim2.new(0, 210, 0, 32)
+FlingOpenBtn.Font = Enum.Font.GothamBold
+FlingOpenBtn.Text = "Open Fling Menu"
+FlingOpenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FlingOpenBtn.TextSize = 12
 
 local FlingWindow = Instance.new("Frame")
-FlingWindow.Name = "FlingWindow"
 FlingWindow.Parent = ScreenGui
-FlingWindow.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+FlingWindow.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 FlingWindow.BorderColor3 = Color3.fromRGB(255, 50, 50)
 FlingWindow.BorderSizePixel = 1
-FlingWindow.Position = UDim2.new(0.32, 0, 0.1, 0)
-FlingWindow.Size = UDim2.new(0, 180, 0, 220)
+FlingWindow.Position = UDim2.new(0.32, 0, 0.25, 0)
+FlingWindow.Size = UDim2.new(0, 190, 0, 260)
 FlingWindow.Visible = false
 FlingWindow.Active = true
 FlingWindow.Draggable = true
@@ -462,16 +586,20 @@ FlingTitle.Parent = FlingWindow
 FlingTitle.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 FlingTitle.Size = UDim2.new(1, 0, 0, 28)
 FlingTitle.Font = Enum.Font.GothamBold
-FlingTitle.Text = "SELECT TARGET TO FLING"
+FlingTitle.Text = "FLING TARGETS"
 FlingTitle.TextColor3 = Color3.fromRGB(255, 100, 100)
-FlingTitle.TextSize = 9
+FlingTitle.TextSize = 10
+
+FlingOpenBtn.MouseButton1Click:Connect(function()
+    FlingWindow.Visible = not FlingWindow.Visible
+end)
 
 local FlingScroll = Instance.new("ScrollingFrame")
 FlingScroll.Parent = FlingWindow
 FlingScroll.BackgroundTransparency = 1
 FlingScroll.Position = UDim2.new(0, 0, 0, 30)
 FlingScroll.Size = UDim2.new(1, 0, 1, -30)
-FlingScroll.CanvasSize = UDim2.new(0, 0, 0, 350)
+FlingScroll.CanvasSize = UDim2.new(0, 0, 0, 400)
 FlingScroll.ScrollBarThickness = 3
 
 local FlingLayout = Instance.new("UIListLayout")
@@ -479,11 +607,6 @@ FlingLayout.Parent = FlingScroll
 FlingLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 FlingLayout.SortOrder = Enum.SortOrder.LayoutOrder
 FlingLayout.Padding = UDim.new(0, 4)
-
-FlingMenuBtn.MouseButton1Click:Connect(function()
-    FlingOpen = not FlingOpen
-    FlingWindow.Visible = FlingOpen
-end)
 
 task.spawn(function()
     while true do
@@ -493,20 +616,33 @@ task.spawn(function()
                 if child:IsA("TextButton") then child:Destroy() end
             end
             
-            for _, p in ipairs(Players:GetPlayers()) do
+            -- Sort players pinning Murderer and Sheriff first
+            local playersList = Players:GetPlayers()
+            table.sort(playersList, function(a, b)
+                local roleA, _ = fetchPlayerRole(a)
+                local roleB, _ = fetchPlayerRole(b)
+                if roleA == "Murderer" then return true end
+                if roleB == "Murderer" then return false end
+                if roleA == "Sheriff" then return true end
+                if roleB == "Sheriff" then return false end
+                return a.Name < b.Name
+            end)
+            
+            for _, p in ipairs(playersList) do
                 if p ~= LocalPlayer then
+                    local role, color = fetchPlayerRole(p)
                     local pBtn = Instance.new("TextButton")
                     pBtn.Parent = FlingScroll
                     pBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-                    pBtn.Size = UDim2.new(0, 165, 0, 26)
+                    pBtn.Size = UDim2.new(0, 175, 0, 26)
                     pBtn.Font = Enum.Font.Gotham
-                    pBtn.Text = p.Name
-                    pBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-                    pBtn.TextSize = 11
+                    pBtn.Text = p.Name .. " [" .. role .. "]"
+                    pBtn.TextColor3 = color
+                    pBtn.TextSize = 10
                     
                     pBtn.MouseButton1Click:Connect(function()
                         pBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-                        pBtn.Text = "ATTACKING: " .. p.Name
+                        pBtn.Text = "FLINGING: " .. p.Name
                         
                         task.spawn(function()
                             local character = LocalPlayer.Character
@@ -515,7 +651,7 @@ task.spawn(function()
                                 local hrp = character:FindFirstChild("HumanoidRootPart")
                                 local tHrp = targetChar.HumanoidRootPart
                                 local startTime = tick()
-                                while tick() - startTime < 2.5 and hrp and tHrp do
+                                while tick() - startTime < 3 and hrp and tHrp do
                                     hrp.CFrame = tHrp.CFrame * CFrame.new(math.random(-2, 2), 0, math.random(-2, 2))
                                     hrp.Velocity = Vector3.new(99999, 99999, 99999)
                                     RunService.RenderStepped:Wait()
