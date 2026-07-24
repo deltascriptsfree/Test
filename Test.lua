@@ -1,9 +1,9 @@
 -- ============================================================================
--- MM2 ULTIMATE HACK SUITE V3 (DELTA OPTIMIZED)
--- Features: Russian Interface, Compact UI, Working Mobile Fly, Role ESP,
--- Target Aimbot, Fling Player GUI (Select by Name), Pre-game Role Detection,
--- Speed (Fix Toggle), Noclip, Fullbright, SpinBot, Infinite Jump & More!
--- Language: Russian
+-- MM2 ULTIMATE HACK SUITE V4 (DELTA OPTIMIZED)
+-- Features: Clean Compact UI, Working Mobile Fly, Role ESP, Target Aimbot,
+-- Fling Player GUI (Select by Name), Pre-game Role Detection, Speed Fix,
+-- Noclip, Fullbright, SpinBot, Infinite Jump.
+-- Language: English Only (No Cyrillic/Russian characters)
 -- ============================================================================
 
 local CoreGui = game:GetService("CoreGui")
@@ -34,13 +34,13 @@ local WalkSpeedValue = 32
 local FlySpeedValue = 50
 
 -- Cleanup Existing UI Instances
-if CoreGui:FindFirstChild("MM2UltimateSuiteGuiV3") then
-    CoreGui.MM2UltimateSuiteGuiV3:Destroy()
+if CoreGui:FindFirstChild("MM2UltimateSuiteGuiV4") then
+    CoreGui.MM2UltimateSuiteGuiV4:Destroy()
 end
 
 -- Create Main UI Container
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MM2UltimateSuiteGuiV3"
+ScreenGui.Name = "MM2UltimateSuiteGuiV4"
 ScreenGui.ResetOnSpawn = false
 
 if gethui then
@@ -62,13 +62,13 @@ ToggleButton.BorderSizePixel = 2
 ToggleButton.Position = UDim2.new(0.02, 0, 0.1, 0)
 ToggleButton.Size = UDim2.new(0, 45, 0, 45)
 ToggleButton.Font = Enum.Font.GothamBold
-ToggleButton.Text = "МЕНЮ"
+ToggleButton.Text = "UI"
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.TextSize = 11
+ToggleButton.TextSize = 12
 ToggleButton.Active = true
 ToggleButton.Draggable = true
 
--- Main Frame Window (Compact Size, Tabbed or Collapsible Design)
+-- Main Frame Window (Compact Size)
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
@@ -76,7 +76,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 MainFrame.BorderColor3 = Color3.fromRGB(50, 50, 50)
 MainFrame.BorderSizePixel = 1
 MainFrame.Position = UDim2.new(0.08, 0, 0.1, 0)
-MainFrame.Size = UDim2.new(0, 230, 0, 320) -- Компактный размер!
+MainFrame.Size = UDim2.new(0, 230, 0, 320)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
@@ -99,7 +99,7 @@ TitleText.TextColor3 = Color3.fromRGB(0, 170, 255)
 TitleText.TextSize = 13
 TitleText.TextXAlignment = Enum.TextXAlignment.Left
 
--- Switch Tabs Button / Minimize
+-- Close Button
 local CloseButton = Instance.new("TextButton")
 CloseButton.Parent = TitleBar
 CloseButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
@@ -126,7 +126,7 @@ ScrollingFrame.Parent = MainFrame
 ScrollingFrame.BackgroundTransparency = 1
 ScrollingFrame.Position = UDim2.new(0, 0, 0, 36)
 ScrollingFrame.Size = UDim2.new(1, 0, 1, -36)
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 600)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 650)
 ScrollingFrame.ScrollBarThickness = 4
 
 local UIListLayout = Instance.new("UIListLayout")
@@ -135,7 +135,7 @@ UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.Padding = UDim.new(0, 6)
 
--- Helper Builder Function for Interactive Toggle Buttons (Russian)
+-- Helper Builder Function for Interactive Toggle Buttons (English Only)
 local function createToggle(labelName, initialCallback)
     local Button = Instance.new("TextButton")
     Button.Parent = ScrollingFrame
@@ -143,7 +143,7 @@ local function createToggle(labelName, initialCallback)
     Button.BorderSizePixel = 0
     Button.Size = UDim2.new(0, 210, 0, 32)
     Button.Font = Enum.Font.Gotham
-    Button.Text = labelName .. ": ВЫКЛ"
+    Button.Text = labelName .. ": OFF"
     Button.TextColor3 = Color3.fromRGB(170, 170, 170)
     Button.TextSize = 12
 
@@ -153,11 +153,11 @@ local function createToggle(labelName, initialCallback)
         if toggled then
             Button.BackgroundColor3 = Color3.fromRGB(0, 140, 60)
             Button.TextColor3 = Color3.fromRGB(255, 255, 255)
-            Button.Text = labelName .. ": ВКЛ"
+            Button.Text = labelName .. ": ON"
         else
             Button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
             Button.TextColor3 = Color3.fromRGB(170, 170, 170)
-            Button.Text = labelName .. ": ВЫКЛ"
+            Button.Text = labelName .. ": OFF"
         end
         pcall(function()
             initialCallback(toggled)
@@ -176,15 +176,15 @@ local function fetchPlayerRole(targetPlayer)
     local hasGun = char:FindFirstChild("Gun") or (backpack and backpack:FindFirstChild("Gun"))
     
     if hasKnife then
-        return "Убийца", Color3.fromRGB(255, 40, 40)
+        return "Murderer", Color3.fromRGB(255, 40, 40)
     elseif hasGun then
-        return "Шериф", Color3.fromRGB(40, 140, 255)
+        return "Sheriff", Color3.fromRGB(40, 140, 255)
     else
-        return "Невинный", Color3.fromRGB(40, 255, 90)
+        return "Innocent", Color3.fromRGB(40, 255, 90)
     end
 end
 
--- Pre-game Role Detection (Показывает роль до начала раунда по инвентарю/банку данных)
+-- Pre-game Role Detection HUD
 local PreGameLabel = Instance.new("TextLabel")
 PreGameLabel.Parent = ScreenGui
 PreGameLabel.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
@@ -193,14 +193,14 @@ PreGameLabel.BorderSizePixel = 1
 PreGameLabel.Position = UDim2.new(0.02, 0, 0.23, 0)
 PreGameLabel.Size = UDim2.new(0, 180, 0, 30)
 PreGameLabel.Font = Enum.Font.GothamBold
-PreGameLabel.Text = "Роль: Ожидание..."
+PreGameLabel.Text = "Role: Waiting..."
 PreGameLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 PreGameLabel.TextSize = 11
 
 RunService.Heartbeat:Connect(function()
     if PreGameRoleActive and LocalPlayer then
         local role, color = fetchPlayerRole(LocalPlayer)
-        PreGameLabel.Text = "Ваша роль: " .. role
+        PreGameLabel.Text = "Role: " .. role
         PreGameLabel.TextColor3 = color
     end
 end)
@@ -266,12 +266,12 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
-createToggle("ВХ / Подсветка Ролей", function(state)
+createToggle("ESP Roles", function(state)
     EspActive = state
 end)
 
 -- 2. Noclip System
-createToggle("Ходьба сквозь стены", function(state)
+createToggle("Noclip Walls", function(state)
     NoclipActive = state
 end)
 
@@ -285,10 +285,10 @@ RunService.Stepped:Connect(function()
     end
 end)
 
--- 3. Working Mobile Fly System (Исправлен лаг на месте!)
+-- 3. Working Mobile Fly System
 local flyConnection
 
-createToggle("Полет (Fly)", function(state)
+createToggle("Fly Mode", function(state)
     FlyActive = state
     local characterInstance = LocalPlayer.Character
     if not characterInstance or not characterInstance:FindFirstChild("HumanoidRootPart") then return end
@@ -331,7 +331,7 @@ createToggle("Полет (Fly)", function(state)
 end)
 
 -- 4. Smart Target-Specific Aimbot
-createToggle("Умный Аимбот", function(state)
+createToggle("Smart Aimbot", function(state)
     AimbotActive = state
 end)
 
@@ -341,10 +341,10 @@ RunService.RenderStepped:Connect(function()
     local myPlayerRole, _ = fetchPlayerRole(LocalPlayer)
     local targetFilterRole = ""
     
-    if myPlayerRole == "Убийца" then
-        targetFilterRole = "Шериф"
-    elseif myPlayerRole == "Шериф" or myPlayerRole == "Невинный" then
-        targetFilterRole = "Убийца"
+    if myPlayerRole == "Murderer" then
+        targetFilterRole = "Sheriff"
+    elseif myPlayerRole == "Sheriff" or myPlayerRole == "Innocent" then
+        targetFilterRole = "Murderer"
     end
     
     local selectedTargetPart = nil
@@ -376,8 +376,8 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 5. Speed Hack Boost (С корректным отключением!)
-createToggle("Быстрый Бег (Speed)", function(state)
+-- 5. Speed Hack Boost
+createToggle("Speed Boost", function(state)
     SpeedActive = state
 end)
 
@@ -388,14 +388,14 @@ RunService.Heartbeat:Connect(function()
             if SpeedActive then
                 humanoidEntity.WalkSpeed = WalkSpeedValue
             else
-                humanoidEntity.WalkSpeed = 16 -- Сброс к дефолтной скорости при выключении
+                humanoidEntity.WalkSpeed = 16
             end
         end
     end
 end)
 
 -- 6. Auto Gun Pickup System
-createToggle("Авто-подбор Пистолета", function(state)
+createToggle("Auto Gun Pickup", function(state)
     AutoGunActive = state
 end)
 
@@ -421,8 +421,8 @@ RunService.Heartbeat:Connect(function()
     end
 end)
 
--- 7. Fullbright (Яркое освещение)
-createToggle("Светлый мир (Fullbright)", function(state)
+-- 7. Fullbright
+createToggle("Fullbright", function(state)
     FullbrightActive = state
 end)
 
@@ -435,8 +435,8 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 8. Infinite Jump (Бесконечный прыжок)
-createToggle("Бесконечный Прыжок", function(state)
+-- 8. Infinite Jump
+createToggle("Infinite Jump", function(state)
     InfJumpActive = state
 end)
 
@@ -449,8 +449,8 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- 9. SpinBot (Крутится для дезориентации врагов)
-createToggle("Спинбот (Вращение)", function(state)
+-- 9. SpinBot
+createToggle("SpinBot", function(state)
     SpinBotActive = state
 end)
 
@@ -462,10 +462,9 @@ RunService.RenderStepped:Connect(function()
 end)
 
 -- ============================================================================
--- FLING GUI MODULE (Флинг любого игрока по нику или роли)
+-- FLING GUI MODULE (Select player by name)
 -- ============================================================================
 local FlingFrameOpen = false
-local SelectedTargetToFling = nil
 
 local FlingMenuBtn = Instance.new("TextButton")
 FlingMenuBtn.Parent = ScrollingFrame
@@ -473,11 +472,10 @@ FlingMenuBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
 FlingMenuBtn.BorderSizePixel = 0
 FlingMenuBtn.Size = UDim2.new(0, 210, 0, 32)
 FlingMenuBtn.Font = Enum.Font.GothamBold
-FlingMenuBtn.Text = "Открыть Меню Флинга"
+FlingMenuBtn.Text = "Open Fling Menu"
 FlingMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 FlingMenuBtn.TextSize = 12
 
--- Второе окно для выбора игроков под флинг
 local FlingWindow = Instance.new("Frame")
 FlingWindow.Name = "FlingWindow"
 FlingWindow.Parent = ScreenGui
@@ -495,7 +493,7 @@ FlingTitle.Parent = FlingWindow
 FlingTitle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 FlingTitle.Size = UDim2.new(1, 0, 0, 30)
 FlingTitle.Font = Enum.Font.GothamBold
-FlingTitle.Text = "ВЫБОР ИГРОКА ДЛЯ ФЛИНГА"
+FlingTitle.Text = "SELECT PLAYER TO FLING"
 FlingTitle.TextColor3 = Color3.fromRGB(255, 100, 100)
 FlingTitle.TextSize = 10
 
@@ -518,12 +516,10 @@ FlingMenuBtn.MouseButton1Click:Connect(function()
     FlingWindow.Visible = FlingFrameOpen
 end)
 
--- Обновление списка игроков для флинга
 task.spawn(function()
     while true do
         task.wait(1)
         if FlingWindow.Visible then
-            -- Очищаем старые кнопки
             for _, child in ipairs(FlingScroll:GetChildren()) do
                 if child:IsA("TextButton") then child:Destroy() end
             end
@@ -540,8 +536,15 @@ task.spawn(function()
                     pBtn.TextSize = 11
                     
                     pBtn.MouseButton1Click:Connect(function()
-                        SelectedTargetToFling = p
                         pBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-                        pBtn.Text = "АТАКА: " .. p.Name
+                        pBtn.Text = "ATTACKING: " .. p.Name
                         
-       
+                        task.spawn(function()
+                            local character = LocalPlayer.Character
+                            local targetChar = p.Character
+                            if character and targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
+                                local hrp = character:FindFirstChild("HumanoidRootPart")
+                                local tHrp = targetChar.HumanoidRootPart
+                                
+                                local startTime = tick()
+                                while tick
