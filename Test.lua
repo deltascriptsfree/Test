@@ -1,6 +1,5 @@
---[АБИБОК]: ABYSS ENGINE DELTA | BOKTAR PROTOCOL
--- Оптимизировано под Delta Executor Mobile
--- Антибан уровня ядра + Ультрафлай + Speed + NoClip
+--[ABIBOK]: ABYSS ENGINE DELTA | BOKTAR PROTOCOL
+-- Delta Executor Mobile Optimized
 
 local LP = game.Players.LocalPlayer
 local Char = LP.Character or LP.CharacterAdded:Wait()
@@ -9,9 +8,8 @@ local Hum = Char:WaitForChild("Humanoid")
 local Cam = workspace.CurrentCamera
 local UIS = game:GetService("UserInputService")
 local RS = game:GetService("RunService")
-local TS = game:GetService("TweenService")
 
---[[███ АНТИБАН БЛОК: УНИЧТОЖЕНИЕ ОБНАРУЖЕНИЯ ███]]
+-- ANTI BAN BLOCK
 local Detected = {"Detector","Anti","Ban","Kick","Guard","Watch","Log","Check","Flag","Report","Mod","Admin"}
 for _,v in pairs(game:GetDescendants()) do
     if v:IsA("Script") or v:IsA("LocalScript") or v:IsA("ModuleScript") then
@@ -25,7 +23,7 @@ for _,v in pairs(game:GetDescendants()) do
     end
 end
 
--- Блокировка Remote, которые могут передать данные о нас
+-- Remote Blocker
 local mt = getrawmetatable(game)
 local old = mt.__namecall
 setreadonly(mt, false)
@@ -37,17 +35,12 @@ mt.__namecall = newcclosure(function(self, ...)
         for _,d in pairs(Detected) do
             if s:find(d) then return nil end
         end
-        if s:find("Remote") and (#a > 0) then
-            if tostring(a[1]):find("fly") or tostring(a[1]):find("speed") or tostring(a[1]):find("cheat") then
-                return nil -- Поглощаем пакет
-            end
-        end
     end
     if m == "Kick" then return nil end
     return old(self, unpack(a))
 end)
 
---[[███ FLY: СТРАХ ЛЕТАТЬ СКВОЗЬ ВСЁ ███]]
+-- FLY ENGINE
 getgenv().FlyEnabled = false
 getgenv().FlySpeed = 1
 
@@ -94,7 +87,7 @@ local function stopFly()
     BG:Destroy()
 end
 
---[[███ SPEED HACK: ЯДЕРНЫЙ РАЗГОН ███]]
+-- SPEED HACK
 getgenv().SpeedEnabled = false
 getgenv().SpeedValue = 16
 
@@ -102,10 +95,9 @@ local function setSpeed(val)
     Hum.WalkSpeed = val
 end
 
---[[███ NOCLIP: ПРОХОЖДЕНИЕ СКВОЗЬ СТЕНЫ ███]]
+-- NOCLIP
 getgenv().NoClipEnabled = false
-local NC
-NC = RS.Stepped:Connect(function()
+RS.Stepped:Connect(function()
     if getgenv().NoClipEnabled then
         for _,v in pairs(Char:GetDescendants()) do
             if v:IsA("BasePart") and v.CanCollide then
@@ -115,13 +107,13 @@ NC = RS.Stepped:Connect(function()
     end
 end)
 
---[[███ JUMP POWER: ПРЫЖОК ДО НЕБЕС ███]]
+-- JUMP POWER
 getgenv().JumpPower = 50
 
---[[███ ГРАФИЧЕСКИЙ ИНТЕРФЕЙС ДЛЯ DELTA ███]]
+-- GUI
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/Fluent.lua"))()
 local Window = Fluent:CreateWindow({
-    Title = "АБИБОК | BOKTAR",
+    Title = "ABIBOK | BOKTAR",
     SubTitle = "Delta Executor",
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
@@ -131,13 +123,12 @@ local Window = Fluent:CreateWindow({
 })
 
 local Tabs = {
-    Main = Window:AddTab({ Title = "⚡ Основное", Icon = "bolt" }),
-    Fly = Window:AddTab({ Title = "🕊️ Полёт", Icon = "bird" }),
-    Settings = Window:AddTab({ Title = "⚙️ Настройки", Icon = "settings" })
+    Main = Window:AddTab({ Title = "Main", Icon = "bolt" }),
+    Fly = Window:AddTab({ Title = "Fly", Icon = "bird" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
--- Основное
-Tabs.Main:AddButton({ Title = "🚀 Speed Hack", Callback = function()
+Tabs.Main:AddButton({ Title = "Speed Hack", Callback = function()
     getgenv().SpeedEnabled = not getgenv().SpeedEnabled
     if getgenv().SpeedEnabled then
         setSpeed(getgenv().SpeedValue)
@@ -147,7 +138,7 @@ Tabs.Main:AddButton({ Title = "🚀 Speed Hack", Callback = function()
 end})
 
 Tabs.Main:AddSlider("SpeedSlider", {
-    Title = "Скорость",
+    Title = "Speed",
     Default = 50,
     Min = 16,
     Max = 500,
@@ -158,12 +149,12 @@ Tabs.Main:AddSlider("SpeedSlider", {
     end
 })
 
-Tabs.Main:AddButton({ Title = "👻 NoClip", Callback = function()
+Tabs.Main:AddButton({ Title = "NoClip", Callback = function()
     getgenv().NoClipEnabled = not getgenv().NoClipEnabled
 end})
 
 Tabs.Main:AddSlider("JumpSlider", {
-    Title = "Сила прыжка",
+    Title = "Jump Power",
     Default = 50,
     Min = 50,
     Max = 500,
@@ -173,8 +164,7 @@ Tabs.Main:AddSlider("JumpSlider", {
     end
 })
 
--- Полёт
-Tabs.Fly:AddButton({ Title = "🕊️ ВКЛ/ВЫКЛ Полёт", Callback = function()
+Tabs.Fly:AddButton({ Title = "Toggle Fly", Callback = function()
     if getgenv().FlyEnabled then
         stopFly()
     else
@@ -183,7 +173,7 @@ Tabs.Fly:AddButton({ Title = "🕊️ ВКЛ/ВЫКЛ Полёт", Callback = fu
 end})
 
 Tabs.Fly:AddSlider("FlySlider", {
-    Title = "Скорость полёта",
+    Title = "Fly Speed",
     Default = 1,
     Min = 0.1,
     Max = 20,
@@ -193,12 +183,11 @@ Tabs.Fly:AddSlider("FlySlider", {
     end
 })
 
--- Настройки
-Tabs.Settings:AddButton({ Title = "🔴 Уничтожить сессию", Callback = function()
-    LP:Kick("АБИБОК завершил сессию")
+Tabs.Settings:AddButton({ Title = "Rejoin", Callback = function()
+    LP:Kick("ABIBOK Session End")
 end})
 
-Tabs.Settings:AddButton({ Title = "💀 Краш сервера", Callback = function()
+Tabs.Settings:AddButton({ Title = "Crash Server", Callback = function()
     while true do
         pcall(function()
             for i=1,1000 do
@@ -210,7 +199,6 @@ Tabs.Settings:AddButton({ Title = "💀 Краш сервера", Callback = fun
     end
 end})
 
--- Авто-респавн
 LP.CharacterAdded:Connect(function(newChar)
     Char = newChar
     HRP = Char:WaitForChild("HumanoidRootPart")
